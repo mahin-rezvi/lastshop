@@ -1,7 +1,10 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { formatPrice } from "./utils";
 import { Order } from "./db/types";
 import { getStoreContact } from "./email";
+
+function formatInvoiceAmount(amount: number): string {
+  return `Tk ${amount.toLocaleString("en-US")}`;
+}
 
 export function getInvoiceNumber(order: Order): string {
   const storedInvoiceNo = (order as any).invoice_no || (order.shipping_address as any)?.invoiceNo;
@@ -73,7 +76,7 @@ export async function createInvoicePdf(order: Order): Promise<Buffer> {
 
   items.forEach((item: any) => {
     const itemLabel = `${item.name}${item.variant ? ` (${item.variant})` : ""}`;
-    const itemAmount = formatPrice(Number(item.price ?? 0) * Number(item.qty ?? 1));
+    const itemAmount = formatInvoiceAmount(Number(item.price ?? 0) * Number(item.qty ?? 1));
     page.drawText(itemLabel, { x: margin, y, size: 10, font: helvetica });
     page.drawText(itemAmount, { x: width - margin - 100, y, size: 10, font: helvetica });
     y -= 14;
@@ -86,13 +89,13 @@ export async function createInvoicePdf(order: Order): Promise<Buffer> {
 
   y -= 6;
   page.drawText("Subtotal", { x: margin, y, size: 10, font: helveticaBold });
-  page.drawText(formatPrice(subtotal), { x: width - margin - 100, y, size: 10, font: helvetica });
+  page.drawText(formatInvoiceAmount(subtotal), { x: width - margin - 100, y, size: 10, font: helvetica });
   y -= 14;
   page.drawText("Shipping", { x: margin, y, size: 10, font: helveticaBold });
-  page.drawText(formatPrice(shippingCost), { x: width - margin - 100, y, size: 10, font: helvetica });
+  page.drawText(formatInvoiceAmount(shippingCost), { x: width - margin - 100, y, size: 10, font: helvetica });
   y -= 14;
   page.drawText("Total", { x: margin, y, size: 12, font: helveticaBold });
-  page.drawText(formatPrice(totalAmount), { x: width - margin - 100, y, size: 12, font: helveticaBold });
+  page.drawText(formatInvoiceAmount(totalAmount), { x: width - margin - 100, y, size: 12, font: helveticaBold });
 
   y -= 28;
   page.drawText(`Payment Method: ${paymentMethod}`, { x: margin, y, size: 10, font: helvetica });

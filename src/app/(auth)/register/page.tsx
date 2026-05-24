@@ -19,7 +19,7 @@ export default function RegisterPage() {
         </h1>
         <p className="text-muted-foreground text-sm mt-2">
           Already have an account?{" "}
-          <Link href="/sign-in" className="text-brand-600 font-semibold hover:underline">
+          <Link href="/login" className="text-brand-600 font-semibold hover:underline">
             Sign in instead →
           </Link>
         </p>
@@ -27,6 +27,8 @@ export default function RegisterPage() {
 
       {/* Clerk SignUp Component */}
       <SignUp
+        signInUrl="/login"
+        fallbackRedirectUrl="/"
         appearance={{
           elements: {
             rootBox: "w-full",

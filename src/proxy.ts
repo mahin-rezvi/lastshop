@@ -4,6 +4,8 @@ const PUBLIC_PATHS = [
   "/",
   "/login",
   "/register",
+  "/sign-in",
+  "/sign-up",
   "/products",
   "/category",
   "/brand",
